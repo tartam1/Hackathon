@@ -8,12 +8,13 @@ def lambda_handler(event, context):
         'tickeID': event['TicketCreationResponse'] ['ticketNumber']
     }
 
-    email_message =   email_message = "Hi Operations team, This is an automated message from IT. There was an incident related to resource id {resourceId} and resource type {resourceType}. An incident ticket was raised and closed with ticket id as {tickeID}. For more information click here.".format(**data_dict)
+    email_message = email_message = "Hi Ops team, This is an automated message from AWS NOW. There was an incident related to resource id {resourceId} and resource type {resourceType}. An incident ticket was raised and closed with ticket id as {tickeID}. For more information click here.".format(**data_dict)
 
     print (email_message)
+
     # TODO implement
     return {
         "statusCode": 200,
-        "message" : '{"default": "A message.","email":"'+ email_message + '","subject":"AWS Operation Incident Noti"}' 
+        "message" : '{"default": "A message.","email":"'+ email_message + '","subject":"IRS AWS Operations Incident Notification"}' 
         
     }
