@@ -1,4 +1,5 @@
 const incidentController = {};
+const notifier = require('../bin/notifier');
 
 const store = [
   {
@@ -38,6 +39,7 @@ incidentController.create = (req, res) => {
   incidentObject.OpenedBy = 'SYSTEM';
   store.push(incidentObject);
   res.send();
+  notifier.emit('store-updated');
 }
 
 incidentController.update = (req, res) => {
@@ -51,7 +53,10 @@ incidentController.update = (req, res) => {
       return Object.assign(el, req.body);
     }
   });
-  if (found) return res.send();
+  if (found) {
+    notifier.emit('store-updated');
+    return res.send();
+  }
   res.sendStatus(404);
 }
 

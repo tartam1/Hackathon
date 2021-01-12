@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('node-express:server');
 var http = require('http');
+const socketio = require('socket.io');
+const notifier = require('./notifier');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +22,14 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+const io = socketio(server);
+
+io.on('connection', socket => {
+  notifier.on('store-updated', () => {
+    socket.emit('refresh-notification');
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.

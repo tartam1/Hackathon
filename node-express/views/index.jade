@@ -4,6 +4,8 @@ head
   title= title
   link(rel='stylesheet' href='./stylesheets/style.css')
   script(src='https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js')
+  script(src='https://cdn.socket.io/socket.io-3.0.1.min.js')
+
   script(src='./components/incident-form.vue')
   script(src='./components/incidents-list.vue')
 #app
@@ -92,4 +94,9 @@ script.
         }
       }
     }
+  });
+
+  const socket = io();
+  socket.on('refresh-notification', () => {
+    app.refreshList();
   });
