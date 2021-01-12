@@ -1,0 +1,95 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  title= title
+  link(rel='stylesheet' href='./stylesheets/style.css')
+  script(src='https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js')
+  script(src='./components/incident-form.vue')
+  script(src='./components/incidents-list.vue')
+#app
+  incident-form(:selected-incident="currentIncident", @create-incident="createIncident", @update-incident="updateIncident", @clear-incident-fields="clearIncidentFormFields")
+  br
+  incidents-list(:incidents='incidents', @set-selected-incident="setSelectedIncident")
+script.
+  var app = new Vue({
+    el: '#app',
+
+    data: {
+      incidents: [],
+      currentIncident: {
+        "Title": "",
+        "Description": "",
+        "IncidentID": "",
+        "Solution": "",
+        "Update": [],
+        "OpenTime": "",
+        "OpenedBy": "",
+        "UpdatedBy": "",
+        "UpdatedTime": "",
+        "Service": "",
+        "Contact": "",
+        "Status": "",
+        "AssignmentGroup": "",
+        "Impact": ""
+      }
+    },
+
+    created: async function () {
+      const response = await fetch('/incidents');
+      this.incidents = await response.json();
+    },
+
+    methods: {
+      setSelectedIncident: async function(id) {
+        try {
+          let response = await fetch(`/incidents/${id}`);
+          if (response.status === 404) throw new Error(`Could not find incident id ${id}`);
+          this.currentIncident = await response.json();
+        } catch (e) {
+          console.log(e.message);
+        }
+      },
+      refreshList: async function() {
+        const response = await fetch('/incidents');
+        this.incidents = await response.json();
+      },
+      createIncident: async function(incidentObject) {
+        const obj = JSON.stringify(incidentObject);
+        const response = await fetch('/incidents', {
+          method: 'post', 
+          headers: {"Content-type": "application/json"}, 
+          body: obj
+        });
+        this.clearIncidentFormFields();
+        await this.refreshList();
+      },
+      updateIncident: async function(incidentObject) {
+        const obj = JSON.stringify(incidentObject);
+        const response = await fetch(`/incidents/${incidentObject.IncidentID}`, {
+          method: 'put', 
+          headers: {"Content-type": "application/json"}, 
+          body: obj
+        });
+        this.clearIncidentFormFields();
+        await this.refreshList();
+      },
+      clearIncidentFormFields: function() {
+        this.currentIncident = {
+          "Title": "",
+          "Description": "",
+          "IncidentID": "",
+          "Solution": "",
+          "Update": [],
+          "OpenTime": "",
+          "OpenedBy": "",
+          "UpdatedBy": "",
+          "UpdatedTime": "",
+          "Service": "",
+          "Contact": "",
+          "Status": "",
+          "AssignmentGroup": "",
+          "Impact": ""
+        }
+      }
+    }
+  });
