@@ -26,7 +26,7 @@ Resources:
         Properties:
             Description: It will evaluate the incident and take a decision on the next steps. It will decide whether an automation process is required or a manual approval is required or nothing has to be done.
             CodeUri: 's3://irstickets/zipfiles/eval.py.zip'
-            Handler: lambda_function.lambda_handler
+            Handler: eval.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
     OpenIncident:
@@ -34,7 +34,7 @@ Resources:
         Properties:
             Description: It will open the incident ticket.
             CodeUri: 's3://irstickets/zipfiles/open.py.zip'
-            Handler: lambda_function.lambda_handler
+            Handler: open.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
     CloseIncident:
@@ -42,7 +42,7 @@ Resources:
         Properties:
             Description: It will close the incident ticket.
             CodeUri: 's3://irstickets/zipfiles/open.py.zip'
-            Handler: lambda_function.lambda_handler
+            Handler: open.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
     ResolveIncident:
@@ -50,7 +50,7 @@ Resources:
         Properties:
             Description: It will resolve the incident. For example closing the SSH port or removing the public access for S3 bucket.
             CodeUri: 's3://irstickets/zipfiles/resolve.py.zip'
-            Handler: lambda_function.lambda_handler
+            Handler: resolve.lambda_handler
             Role: !Sub ${LambdaServiceRoleForResolveIncident.Arn}
 
     PrepareMessage:
@@ -58,7 +58,7 @@ Resources:
         Properties:
             Description: It will send message/email to Operations manager.
             CodeUri: 's3://irstickets/zipfiles/send_message.py.zip'
-            Handler: lambda_function.lambda_handler
+            Handler: send_message.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
 
