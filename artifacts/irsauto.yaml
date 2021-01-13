@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-            IT Automation using Step Functions
+            IT Automation using Step Machine
 Parameters:
-    NotificationEmail: kevin.d.jones.jr@gmail.com
+    NotificationEmail:
         Type: String
-        Description: Email address to subscribe to SNS topic and receive notifications from IT Operations events
+        Description: Email address to subscribe to SNS topic and receive notifications from events
 
 ## GLobals
 
@@ -15,7 +15,7 @@ Globals:
         Timeout: 30
         Tracing: Active
         Tags:
-            Project: IRSAutomationV1
+            Project: IRSAutomationFrameworkV1
 
 Resources:
 
@@ -25,8 +25,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will evaluate the incident and take a decision on the next steps. It will decide whether an automation process is required or a manual approval is required or nothing has to be done.
-            CodeUri: ./artifacts/zipfiles/EvaluateRequest.zip
-            #CodeUri: 's3://devdayblogwebsite/artifacts/EvaluateRequest.zip'
+            CodeUri: 's3://irstickets/zipfiles/eval.py.zip'
             Handler: lambda_function.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
@@ -34,8 +33,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will open the incident ticket.
-            CodeUri: ./artifacts/zipfiles/OpenIncidentTicket.zip
-            #CodeUri: 's3://devdayblogwebsite/artifacts/OpenIncidentTicket.zip'
+            CodeUri: 's3://irstickets/zipfiles/open.py.zip'
             Handler: lambda_function.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
@@ -43,8 +41,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will close the incident ticket.
-            CodeUri: ./artifacts/zipfiles/OpenIncidentTicket.zip
-            #CodeUri: 's3://devdayblogwebsite/artifacts/OpenIncidentTicket.zip'
+            CodeUri: 's3://irstickets/zipfiles/open.py.zip'
             Handler: lambda_function.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
@@ -52,8 +49,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will resolve the incident. For example closing the SSH port or removing the public access for S3 bucket.
-            CodeUri: ./artifacts/zipfiles/ResolveIncident.zip
-            #CodeUri: 's3://devdayblogwebsite/artifacts/ResolveIncident.zip'
+            CodeUri: 's3://irstickets/zipfiles/resolve.py.zip'
             Handler: lambda_function.lambda_handler
             Role: !Sub ${LambdaServiceRoleForResolveIncident.Arn}
 
@@ -61,8 +57,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will send message/email to Operations manager.
-            CodeUri: ./artifacts/zipfiles/PrepareMessage.zip
-            #CodeUri: 's3://devdayblogwebsite/artifacts/PrepareMessage.zip'
+            CodeUri: 's3://irstickets/zipfiles/send_message.py.zip'
             Handler: lambda_function.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
