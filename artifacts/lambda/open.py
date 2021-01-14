@@ -2,6 +2,7 @@ import json
 import uuid
 import requests
 
+# Botocore removed the vendored version of requests: This is a viable workaround.
 def lambda_handler(event, context):
     
 
