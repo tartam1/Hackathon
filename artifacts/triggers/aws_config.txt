@@ -1,0 +1,6 @@
+Rules below are just for testing trigggers:
+
+ec2-security-group-attached-to-eni
+ec2-instance-managed-by-systems-manager
+restricted-ssh
+vpc-sg-open-only-to-authorized-ports
