@@ -4,7 +4,7 @@ const incidentController = require('../controllers/incidentController');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Enterprise ITSM Service Portal' });
+  res.render('index', { title: 'Unity Interface' });
 });
 
 router.get('/incidents/:id', incidentController.get);
