@@ -3,9 +3,9 @@ const notifier = require('../bin/notifier');
 
 const store = [
   {
-    "Title": "Need to reboot server",
-    "Description": "server is not responding",
-    "IncidentID": 3,
+    "Title": "web Server not returning HTTP 500 error",
+    "Description": "The timesheet application is unavailable",
+    "IncidentID": 1,
     "Solution": "",
     "Update": [],
     "OpenTime": 1610411214817,
@@ -15,8 +15,8 @@ const store = [
     "Service": "Middleware applications",
     "Contact": "jsmith",
     "Status": "assigned",
-    "AssignmentGroup": "server response team",
-    "Impact": "low"
+    "AssignmentGroup": "web team",
+    "Impact": "high"
   }
 ];
 

@@ -3,7 +3,10 @@ const tools = {};
 
 tools.asyncHttp = options => new Promise((resolve, reject) => {
   let data = '';
-  const request = http.request(options, res => {
+  const opts = tools.clone(options);
+  const body = opts.body || undefined;
+  delete opts.body;
+  const request = http.request(opts, res => {
     res.on('data', (chunk) => {
       data = data + chunk;
     });
@@ -11,7 +14,11 @@ tools.asyncHttp = options => new Promise((resolve, reject) => {
       resolve(data);
     });
   });
-  request.end();
+  if (body) {
+    request.end(body);
+  } else {
+    request.end();
+  }
 });
 
 tools.clone = (obj) => {

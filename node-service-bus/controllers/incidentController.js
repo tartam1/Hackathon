@@ -4,7 +4,7 @@ const tools = require('../bin/tools');
 const http = require('http');
 const { openStdin } = require('process');
 
-const _unityId = 0;
+let _unityId = 0;
 const ids = []; // contains ids of incidents created in app through unity interface 
 const store = []; // { legacyId: 200, unityId: 2, appId: 7}
 
@@ -49,14 +49,14 @@ incidentController.getAll = async (req, res) => {
   const response = [];
   // filter out incidents created through unity interface
   appIncidents = AppRequest.filter(el => !ids.includes(el.IncidentID));
-  response.push(legacyAppIncidents, appIncidents)
+  response.push(...legacyAppIncidents, ...appIncidents)
   res.send(JSON.stringify(response));
 }
 
 incidentController.get = async (req, res) => {
   const id = parseInt(req.params.id);
   const _opts = getHttpClientConfigById(id);
-  const opts = _opts.length > 1 ? opts[0] : opts;
+  const opts = _opts.length > 1 ? _opts[0] : _opts;
   found = await tools.asyncHttp(opts);
   if (found) return res.send(found);
   res.sendStatus(404);
@@ -70,10 +70,10 @@ incidentController.create = async (req, res) => {
   const legacyId = await tools.asyncHttp(opts);
   opts.port = 4000;
   const appId = await tools.asyncHttp(opts);
-  const unityId = ++_unityId;
+  const unityId = _unityId + 1;
   const obj = { legacyId, unityId, appId }
   store.push(obj);
-  res.send(unityId);
+  res.send(unityId.toString());
   notifier.emit('store-updated');
 }
 
