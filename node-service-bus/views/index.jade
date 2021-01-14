@@ -57,6 +57,7 @@ script.
           let response = await fetch(`/incidents/${id}`);
           if (response.status === 404) throw new Error(`Could not find incident id ${id}`);
           this.currentIncident = await response.json();
+          this.currentIncident.IncidentID = id;
         } catch (e) {
           console.log(e.message);
         }
