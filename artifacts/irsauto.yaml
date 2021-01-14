@@ -33,7 +33,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will open the incident ticket.
-            CodeUri: 's3://irstickets/zipfiles/open.py.zip'
+            CodeUri: 's3://irstickets/zipfiles/Archive.zip.zip'
             Handler: open.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
@@ -41,7 +41,7 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Description: It will close the incident ticket.
-            CodeUri: 's3://irstickets/zipfiles/open.py.zip'
+            CodeUri: 's3://irstickets/zipfiles/Archive.zip'
             Handler: open.lambda_handler
             Role: !Sub ${LambdaServiceRole.Arn}
 
