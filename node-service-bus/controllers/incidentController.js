@@ -82,4 +82,31 @@ incidentController.update = async (req, res) => {
   return res.send();
 }
 
+incidentController.getCsv = async (req, res) => {
+  const opts = tools.clone(httpOpts);
+  opts.port = 3000;
+  let legacyAppIncidents = JSON.parse(await tools.asyncHttp(opts));
+  opts.port = 4000;
+  const appIncidents = JSON.parse(await tools.asyncHttp(opts));
+
+  // filter out duplicate incidents that result from creating through unity interface in two applications
+  legacyAppIncidents = legacyAppIncidents.filter(removeDuplicateIncidents);
+
+  // Add identifiers to incident ID so we know what env the id came from
+  legacyAppIncidents.forEach(e => e.IncidentID = `${e.IncidentID}:legacy`);
+  appIncidents.forEach(e => e.IncidentID = `${e.IncidentID}:app`);
+
+  const response = [];
+  response.push(...legacyAppIncidents, ...appIncidents)
+  const data = [];
+  const headers = Object.keys(response[0]).join('","');
+  data.push(`"${headers}"`);
+  response.forEach(e => {
+    let row = Object.values(e).join('","');
+    data.push(`"${row}"`);
+  });
+  const resultset = data.join('\r\n');
+  res.send(resultset);
+}
+
 module.exports = incidentController;

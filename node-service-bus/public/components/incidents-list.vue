@@ -3,10 +3,9 @@ Vue.component('incidents-list', {
     <div>
       <table>
         <tr>
-          <th class="col-width-ctl th-start">Case Number</th>
+          <th class="col-width-ctl th-start">Identifier</th>
           <th class="col-width-ctl">Status</th>
-          <th class="col-width-ctl">Category</th>
-          <th>Problem Statement</th>
+          <th>Problem Summary</th>
         </tr>
         <tr @click="selectIncident" v-for="item in incidents">
           <td class="col-width-ctl">
@@ -14,9 +13,6 @@ Vue.component('incidents-list', {
           </td>
           <td class="col-width-ctl">
                         {{ item.Status }}
-          </td>
-          <td class="col-width-ctl">
-                        {{ item.Service }}
           </td>
           <td>
                         {{ item.Title }}

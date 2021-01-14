@@ -48,7 +48,7 @@ tools.getUpdateConfig = (store) => {
 
   return function(id, body) {
     const opts = [];
-    httpOpts.headers["Content-Length"] = JSON.stringify(body).length; // Might have to convert object to string here
+    httpOpts.headers["Content-Length"] = JSON.stringify(body).length; 
     httpOpts.body = JSON.stringify(body);
     const storeCopy = tools.clone(store);
 
