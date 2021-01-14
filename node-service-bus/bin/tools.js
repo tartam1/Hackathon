@@ -8,7 +8,7 @@ tools.asyncHttp = options => new Promise((resolve, reject) => {
   delete opts.body;
   const request = http.request(opts, res => {
     res.on('data', (chunk) => {
-      data = data + chunk;
+      data = data + chunk.toString();
     });
     res.on('end', () => {
       resolve(data);
@@ -23,6 +23,16 @@ tools.asyncHttp = options => new Promise((resolve, reject) => {
 
 tools.clone = (obj) => {
   return JSON.parse(JSON.stringify(obj));
+};
+
+tools.removeDuplicateIncidents = (store) => {
+  return function(incident) {
+    if (store.length === 0) return true;
+    const incidentIdsCreatedThroughUnity = store.map(e => {
+      if (e.unityId > 0) return e.legacyId;
+    });
+    return !incidentIdsCreatedThroughUnity.includes(incident.IncidentID)
+  }
 };
 
 module.exports = tools;

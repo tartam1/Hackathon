@@ -2,10 +2,8 @@ const incidentController = {};
 const notifier = require('../bin/notifier');
 const tools = require('../bin/tools');
 const http = require('http');
-const { openStdin } = require('process');
 
 let _unityId = 0;
-const ids = []; // contains ids of incidents created in app through unity interface 
 const store = []; // { legacyId: 200, unityId: 2, appId: 7}
 
 const httpOpts = {
@@ -15,23 +13,25 @@ const httpOpts = {
   method: 'get'
 }
 
+const removeDuplicateIncidents = tools.removeDuplicateIncidents(store);
+
 function getHttpClientConfigById(id) {
   const opts = tools.clone(httpOpts);
   let opts2 = undefined;
   for (let i = 0; i < store.length; i++) {
-    if (id == e.unityId) {
+    if (id == store[i].unityId) {
       opts2 = tools.clone(httpOpts);
-      opts.path = `/incidents/${e.appId}`;
-      opts2.path = `/incidents/${e.legacyAppId}`;
+      opts.path = `/incidents/${store[i].appId}`;
+      opts2.path = `/incidents/${store[i].legacyAppId}`;
       opts.port = 4000;
       opts2.port = 3000;
       break;
-    } else if (id == e.appId) {
-      opts.path = `/incidents/${e.appId}`;
+    } else if (id == store[i].appId) {
+      opts.path = `/incidents/${store[i].appId}`;
       opts.port = 4000;
       break;
-    } else if (id == e.legacyId) {
-      opts.path = `/incidents/${e.legacyId}`;
+    } else if (id == store[i].legacyId) {
+      opts.path = `/incidents/${store[i].legacyId}`;
       opts.port = 3000;
       break;
     }
@@ -42,13 +42,17 @@ function getHttpClientConfigById(id) {
 incidentController.getAll = async (req, res) => {
   const opts = tools.clone(httpOpts);
   opts.port = 3000;
-  const legacyAppIncidents = JSON.parse(await tools.asyncHttp(opts));
+  let legacyAppIncidents = JSON.parse(await tools.asyncHttp(opts));
   opts.port = 4000;
-  const AppRequest = JSON.parse(await tools.asyncHttp(opts));
+  const appIncidents = JSON.parse(await tools.asyncHttp(opts));
+
+  // filter out duplicate incidents that result from creating through unity interface in two applications
+  legacyAppIncidents = legacyAppIncidents.filter(removeDuplicateIncidents);
+  // Add identifiers to incident ID so we know what env the id came from
+  legacyAppIncidents.forEach(e => e.IncidentID = `${e.IncidentID}:legacy`);
+  appIncidents.forEach(e => e.IncidentID = `${e.IncidentID}:app`);
 
   const response = [];
-  // filter out incidents created through unity interface
-  appIncidents = AppRequest.filter(el => !ids.includes(el.IncidentID));
   response.push(...legacyAppIncidents, ...appIncidents)
   res.send(JSON.stringify(response));
 }
@@ -56,6 +60,7 @@ incidentController.getAll = async (req, res) => {
 incidentController.get = async (req, res) => {
   const id = parseInt(req.params.id);
   const _opts = getHttpClientConfigById(id);
+  console.log(_opts);
   const opts = _opts.length > 1 ? _opts[0] : _opts;
   found = await tools.asyncHttp(opts);
   if (found) return res.send(found);
@@ -63,14 +68,18 @@ incidentController.get = async (req, res) => {
 }
 
 incidentController.create = async (req, res) => {
-  const incidentObject = req.body;
   const opts = tools.clone(httpOpts);
+  opts.body = JSON.stringify(req.body);
   opts.port = 3000;
   opts.method = 'post';
+  opts.headers = {
+    "Content-type": "application/json",
+    "Content-Length": opts.body.length
+  };
   const legacyId = await tools.asyncHttp(opts);
   opts.port = 4000;
   const appId = await tools.asyncHttp(opts);
-  const unityId = _unityId + 1;
+  const unityId = ++_unityId;
   const obj = { legacyId, unityId, appId }
   store.push(obj);
   res.send(unityId.toString());
