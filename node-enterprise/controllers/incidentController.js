@@ -12,9 +12,9 @@ const store = [
     "OpenedBy": "rduran",
     "UpdatedBy": "rduran",
     "UpdatedTime": "",
-    "Service": "Middleware applications",
+    "Service": "Web Services",
     "Contact": "jsmith",
-    "Status": "assigned",
+    "Status": "work in progress",
     "AssignmentGroup": "web team",
     "Impact": "high"
   }
