@@ -38,7 +38,7 @@ incidentController.create = (req, res) => {
   incidentObject.OpenTime = Date.now();
   incidentObject.OpenedBy = 'SYSTEM';
   store.push(incidentObject);
-  res.send();
+  res.send(incidentObject.IncidentID.toString());
   notifier.emit('store-updated');
 }
 
