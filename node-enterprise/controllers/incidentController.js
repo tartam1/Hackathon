@@ -3,20 +3,20 @@ const notifier = require('../bin/notifier');
 
 const store = [
   {
-    "Title": "Need to reboot server",
-    "Description": "server is not responding",
-    "IncidentID": 3,
+    "Title": "web Server not returning HTTP 500 error",
+    "Description": "The timesheet application is unavailable",
+    "IncidentID": 1,
     "Solution": "",
     "Update": [],
     "OpenTime": 1610411214817,
     "OpenedBy": "rduran",
     "UpdatedBy": "rduran",
     "UpdatedTime": "",
-    "Service": "Middleware applications",
+    "Service": "Web Services",
     "Contact": "jsmith",
-    "Status": "assigned",
-    "AssignmentGroup": "server response team",
-    "Impact": "low"
+    "Status": "work in progress",
+    "AssignmentGroup": "web team",
+    "Impact": "high"
   }
 ];
 
@@ -34,11 +34,12 @@ incidentController.get = (req, res) => {
 incidentController.create = (req, res) => {
   const incidentObject = req.body;
   incidentIds = store.map(el => el.IncidentID);
-  incidentObject.IncidentID = Math.max(incidentIds) + 1;
+  incidentObject.IncidentID = Math.max(...incidentIds) + 1;
   incidentObject.OpenTime = Date.now();
   incidentObject.OpenedBy = 'SYSTEM';
   store.push(incidentObject);
-  res.send();
+  console.log(incidentObject.IncidentID);
+  res.send(incidentObject.IncidentID.toString());
   notifier.emit('store-updated');
 }
 

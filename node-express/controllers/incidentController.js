@@ -34,11 +34,11 @@ incidentController.get = (req, res) => {
 incidentController.create = (req, res) => {
   const incidentObject = req.body;
   incidentIds = store.map(el => el.IncidentID);
-  incidentObject.IncidentID = Math.max(incidentIds) + 1;
+  incidentObject.IncidentID = Math.max(...incidentIds) + 1;
   incidentObject.OpenTime = Date.now();
   incidentObject.OpenedBy = 'SYSTEM';
   store.push(incidentObject);
-  res.send();
+  res.send(incidentObject.IncidentID.toString());
   notifier.emit('store-updated');
 }
 
