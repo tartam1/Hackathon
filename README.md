@@ -7,7 +7,7 @@ Most applications provide more functionality than is required to support the bus
 As a general statement, we are creatures of habit; we don't like change.
 Change, be it an application or business process, introduces learning curves, and impacts productivity during the transition period. Change is best adopted when it provides the path of least resistance. The new way should be more comfortable, more efficient, and intuitive. Users will naturally embrace the change with less resistance if they can see the value in it.
 
-Going back to the microservices, once all applicable services are published to the enterprise service bus, it's time to build a slimmed-down intuitive interface made to fit the user. The interface is kept simple and only contains the components necessary for the user to perform their duties. It should be designed with the user experience in mind, adhering to the principle of least astonishment (POLA). POLA proposes that "the design should match the user's experience, expectations, and mental models." Users should not struggle to understand and interact with an application; it should just make sense.
+Going back to the microservices, after publishing all applicable services to the enterprise service bus, it's time to build a slimmed-down intuitive interface made to fit the user. The interface is kept simple and only contains the components necessary for the user to perform their duties. It should be designed with the user experience in mind, adhering to the principle of least astonishment (POLA). POLA proposes that "the design should match the user's experience, expectations, and mental models." Users should not struggle to understand and interact with an application; it should just make sense.
 
 We built a prototype environment to show you this concept in a real-world scenario. We have the legacy application in the background, the application selected to replace the legacy application, a service bus, and the interface that communicates with the service bus.
 
@@ -15,10 +15,18 @@ http://onportal.net:3000 <-legacy
 http://onportal.net:4000 <- new app
 http://onportal.net:5000 <- unifying interface
 
-One of the issues encountered when migrating off legacy systems is the dependencies and integrations with that legacy system. Other systems may programmatically interact with the legacy system for their business needs, for example, reporting. The answer is to add the reporting capabilities as a service in the ESB. The service is designed to mimic the function provided by the legacy application enabling consumers to migrate over with minimal effort, generally only requiring a change of server name and port number. All other existing logic can remain the same on the consumer's end.
+One of the issues encountered when migrating off legacy systems is the dependencies and integrations with that legacy system. Other systems may programmatically interact with the legacy system for their business needs, for example, reporting. The answer is to add the reporting capabilities as a service in the ESB. The service mimics the legacy application's function, enabling consumers to migrate over with minimal effort, generally requiring a change of server name and port number. All other existing logic can remain the same on the consumer's end.
 
 http://onportal.net:5000/reports/csv
 
 In our example, the legacy, replacement application, and ESB are online and operational. Both applications have a connection to the ESB, where they expose their services. The unifying interface, through the ESB, communicates with both applications.
 
 Users can continue to use the legacy application during the transition period. The unifying interface is socialized, and if designed correctly, users will naturally begin to migrate to the new interface. The unified interface allows the user to interact with incidents in both the legacy and replacement applications. Once users have migrated off the legacy interface and existing integrations repointed to the ESB, it is ready to be decommissioned.
+
+As mentioned before, not all services provided by an application are published to the ESB. Users can still leverage the features of the new application when necessary, by access the application directly. If the enterprise finds that a capability is regularly accessed, it can be added as a service in the ESB.
+
+So what does our future state look like? Consumers are accessing services though the ESB and are no longer directly accessing the application. This abstraction layer makes future migrations transparent to users.
+
+There is another big benefit to this approach. As more applications are onboarded onto the ESB the IRS begins to build a catalog of services. This is a catalog of capabilities. Today we have duplication of work across different groups in the IRS. This happens because users are not aware that the capability exists. A service catalog solves this and allows the IRS to focus on capabilities that dont currently exist.
+
+Another benefit, a service catalog allows us to begin thinking in a declarative paradigm rather than imperative. We're able to think in terms of what I want to do rather than how to do it. A simple example, I want to increase the CPUs on my application server. Today we need to open a change request to add more CPUs, a task to stop monitoring, a job to reboot the server, a task to enable monitoring. The user is responsible for knowing how to achieve their goal. With services, you request more CPU power. The service abstracts away the underlying steps. The service opens a change request in the ticketing system, disables monitoring, instructs VSphere to allocate more CPUs, restarts the system, verifies that the change was successful, and closes the change request.
