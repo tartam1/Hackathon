@@ -2,7 +2,7 @@ Vue.component('incident-form', {
   template: `
     <div>
       <div class="grid-headers">
-        <label for="Title">Title:</label>
+        <label for="Title">Summary:</label>
         <input id="Title" v-model="selectedIncident.Title">
         
         <label for="Description">Description:</label>

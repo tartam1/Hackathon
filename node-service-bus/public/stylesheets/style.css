@@ -1,9 +1,9 @@
 body {
-  background-color: #30454d;
+  background-color: #7a8f9754;
   font-family: "Arial", "Verdana", "Courier New";
   font-size: 14px;
   padding: 15px;
-  color: yellow;
+  color: rgb(14, 14, 8);
 }
 
 label {
@@ -144,7 +144,7 @@ input:read-only {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 130px 180px 125px 340px;
+  grid-template-columns: 130px 180px 155px 310px;
   grid-gap: 8px;
   grid-column-gap: 30px;
 }
